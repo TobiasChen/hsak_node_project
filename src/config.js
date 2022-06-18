@@ -1,6 +1,7 @@
 export const config = {
     "log":{
-            "level": "info"
+            "level": "info",
+            "path": "./log/"
     },
     "userScriptPath" : './src/UserScripts/',
     "statePollService":{
