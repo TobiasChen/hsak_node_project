@@ -1,39 +1,37 @@
-import readline from 'readline'
 import { registerCallback } from '../statePollerService.js';
+import { triggerAction } from '../actionDispatch.js';
 
-function askQuestion(query) {
-    const rl = readline.createInterface({
-        input: process.stdin,
-        output: process.stdout,
-    });
-
-    return new Promise(resolve => rl.question(query, ans => {
-        rl.close();
-        resolve(ans);
-    }))
+export default function () {
+    callActionOnRiddleX();
+    registerforStateChangeForRiddleX();
+    registerforStateChangeForRiddleX2();
+    registerforStateChangeForRiddleY();
 }
 
-
-//const ans = await askQuestion("Are you sure you want to deploy to PRODUCTION? ");
-//console.log('=========== \n Answer was: ' + ans + '\n ===========')
-
-registerForRiddle();
-callAction();
-reactToStateChange();
-
-
-function registerForRiddle(){
-    
+function callActionOnRiddleX() {
+        const payload = {}
+        payload.names = ['Emil', 'Berta']
+        payload.id = [1, 2]
+        triggerAction("riddleIdX", "actionIdX", payload)
 }
 
-function callAction(){
-
+function stateChangeHandlerRiddleX(newState) {
+    console.log("Received new State1: " + JSON.stringify(newState))
+}
+function stateChangeHandlerRiddleX2(newState) {
+    console.log("Received new State2: " + JSON.stringify(newState))
 }
 
-function reactToStateChange(){
-    registerCallback(stateChangeHandler);
+function registerforStateChangeForRiddleX() {
+    console.log("Registring Callback for riddleIdX")
+    registerCallback("riddleIdX",stateChangeHandlerRiddleX);
+}
+function registerforStateChangeForRiddleX2() {
+    console.log("Registring Callback for riddleIdX2")
+    registerCallback("riddleIdX",stateChangeHandlerRiddleX2);
+}
+function registerforStateChangeForRiddleY() {
+    console.log("Registring Callback for riddleIdY")
+    registerCallback("riddleIdY",stateChangeHandlerRiddleX);
 }
 
-function stateChangeHandler(newState){
-    console.log("Received new State: " + JSON.stringify(newState))
-}

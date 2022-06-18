@@ -1,55 +1,60 @@
 import axios from 'axios';
 import lodash from 'lodash'
 
-var currentState = {}
-var stateChanged = false
-var arrayOfCallbacks = []
+const dictOfCurrentState = {}
+const dictOfCallbacks = {}
 
 
-expose({
-  runPollingService() {
-  (function loop(){
-    setTimeout(function() {
-      console.log("Executing State Update")
-      updateState()
-      if (stateChanged) {
-        updateCallback()
-        stateChanged = false
-      }
-       loop();
-   }, 1000);
+
+export async function runPollingService() {
+  (function loop() {
+    setTimeout(
+      function () {
+        const riddleIDs = Object.keys(dictOfCallbacks)
+        console.log(`Executing State Update for ${riddleIDs}`)
+        for (var i = 0; i < riddleIDs.length; i++) {
+          updateState(riddleIDs[i])
+        }
+        loop();
+      }, 5000);
   })();
 }
-})
 
-export function registerCallback(callback) {
-  arrayOfCallbacks.push(callback);
+export function registerCallback(riddleId, callback) {
+  if(dictOfCallbacks[riddleId] == undefined){
+    dictOfCallbacks[riddleId] = [callback]
+  }
+  else{
+    dictOfCallbacks[riddleId].push(callback)
+  }
 }
 
-
-function updateState() {
+function updateState(riddleID) {
+  console.log(`Updating State of ${riddleID}`)
   axios
-    .get('https://api.nasa.gov/planetary/apod', {
+    .get('https://api.kucoin.com/api/v1/market/stats', {
       params: {
-        api_key: 'DEMO_KEY'
+        symbol: 'BTC-USDT'
       }
     })
     .then(response => {
-      if (!lodash.isEqual(currentState, response.data)) {
-        console.log("State changed!\n prev: " + JSON.stringify(currentState) + "\n new: " + JSON.stringify(response.data))
-        stateChanged = true
-        currentState = response.data
+      console.log(`UpdateState for ${riddleID} :  ${response.status}-${response.statusText} : ${response.data}`)
+      if (!lodash.isEqual(dictOfCurrentState[riddleID], response.data)) {
+        console.log(`State changed for ${riddleID}`)
+        dictOfCurrentState[riddleID] = response.data
+        updateCallbacks(riddleID)
       }
     })
     .catch(error => {
-      console.error("UpdateState:" + error.response.status + "-" + error.response.statusText + ': ' + error.response.data)
+      console.error("UpdateState for ${riddleId}: " + error.response.status + "-" + error.response.statusText + ': ' + error.response.data)
     })
 
 }
 
-function updateCallback() {
-  for (const func in arrayOfCallbacks){
-    console.log("Calling " + func + " with changed Values");
-    func(currentState);
+function updateCallbacks(riddleID) {
+  console.log(`Updating callbacks for ${riddleID}`)
+  for (var i = 0; i < dictOfCallbacks[riddleID].length; i++) {
+    //Call each Callback of the current riddle
+    dictOfCallbacks[riddleID][i](dictOfCurrentState[riddleID]);
   }
 }
