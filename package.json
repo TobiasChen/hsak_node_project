@@ -3,7 +3,7 @@
   "version": "1.0.0",
   "description": "",
   "main": "index.js",
-  "type":"module",
+  "type": "module",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "dev": "node ./src/raspiService.js"
@@ -14,7 +14,8 @@
   "dependencies": {
     "axios": "^0.27.2",
     "lodash": "^4.17.21",
-    "threads": "^1.7.0"
+    "threads": "^1.7.0",
+    "winston": "^3.7.2"
   },
   "devDependencies": {
     "@types/node": "^18.0.0"

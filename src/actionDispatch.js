@@ -1,19 +1,20 @@
 
 import axios from 'axios';
-
-const connectionString = "https://ptsv2.com/t/kruv3-1655553613/post"
-const baseURL = "google.de/api"
-
+import { logger } from './logger.js';
+import { config } from './config.js';
 
 export function triggerAction(riddleId, actionId, payload){
-    const connectionString2 = `${baseURL}/${riddleId}/${actionId}`
+    logger.info(`Triggering Action ${actionId} for riddle ${riddleId}`)
+    const connectionString = `${ config.actionDispatch.baseURL }/${riddleId}/${actionId}`
+    logger.debug(`ConnectionString: ${connectionString}, Payload: ${JSON.stringify(payload)}`)
     axios
     .post(connectionString, payload)
     .then(response => {
-        console.log(`Post for ${riddleId}/${actionId}:  ${response.status}-${response.statusText} : ${response.data}`)
+        logger.http(`Post for ${riddleId}/${actionId}:  ${response.status}-${response.statusText} : ${response.data}`)
       }
     )
     .catch(error => {
-      console.error(`Post for ${riddleId}/${actionId}:  ${error.response.status}-${error.response.statusText} : ${error.response.data}`)
+        if(error.response != undefined) logger.error(`Post for ${riddleId}/${actionId}:  ${error.response.status}-${error.response.statusText} : ${error.response.data}`)
+        else logger.error(`Error triggering Action: ${error}`)
     })
 }

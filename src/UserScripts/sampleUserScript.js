@@ -1,37 +1,37 @@
 import { registerCallback } from '../statePollerService.js';
 import { triggerAction } from '../actionDispatch.js';
+import { logger } from '../logger.js';
 
 export default function () {
-    callActionOnRiddleX();
-    registerforStateChangeForRiddleX();
-    registerforStateChangeForRiddleX2();
-    registerforStateChangeForRiddleY();
+    logger.info("Starting User Script")
+    callActionOnRiddle1();
+    registerCallbackRiddle1();
+    registerCallbackRiddle2();
 }
 
-function callActionOnRiddleX() {
+function callActionOnRiddle1() {
         const payload = {}
         payload.names = ['Emil', 'Berta']
         payload.id = [1, 2]
-        triggerAction("riddleIdX", "actionIdX", payload)
+        triggerAction("riddle1", "action1", payload)
 }
 
-function stateChangeHandlerRiddleX(newState) {
-    console.log("Received new State1: " + JSON.stringify(newState))
+function stateChangeHandlerRiddle1(newState) {
+    logger.verbose("Handling State change for Riddle 1")
+    logger.debug("Received new State1: " + JSON.stringify(newState))
 }
-function stateChangeHandlerRiddleX2(newState) {
-    console.log("Received new State2: " + JSON.stringify(newState))
+function stateChangeHandlerRiddle2(newState) {
+    logger.verbose("Handling State change for Riddle 2")
+    logger.debug("Received new State2: " + JSON.stringify(newState))
 }
 
-function registerforStateChangeForRiddleX() {
-    console.log("Registring Callback for riddleIdX")
-    registerCallback("riddleIdX",stateChangeHandlerRiddleX);
+function registerCallbackRiddle1() {
+    logger.info("Registring Callback for riddle1")
+    registerCallback("riddle1",stateChangeHandlerRiddle1);
 }
-function registerforStateChangeForRiddleX2() {
-    console.log("Registring Callback for riddleIdX2")
-    registerCallback("riddleIdX",stateChangeHandlerRiddleX2);
-}
-function registerforStateChangeForRiddleY() {
-    console.log("Registring Callback for riddleIdY")
-    registerCallback("riddleIdY",stateChangeHandlerRiddleX);
+
+function registerCallbackRiddle2() {
+    logger.info("Registring Callback for riddle2")
+    registerCallback("riddle2",stateChangeHandlerRiddle2);
 }
 
